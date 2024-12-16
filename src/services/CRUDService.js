@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { promiseImpl } from 'ejs';
 import db from '../models/index';
+import { where } from 'sequelize';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -56,7 +57,60 @@ let getAllUser = () => {
     })
 }
 
+let getUserInforById = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let user = await db.User.findOne({
+                where: { id: userId },
+                raw: true,
+            })
+            if (user) {
+                resolve(user)
+
+            } else {
+                resolve([])
+            }
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+
+}
+
+
+let updateUserData = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { id: data.id }
+            })
+            if (user) {
+                user.firstName = data.fistname;
+                user.lastName = data.lastname;
+                user.address = data.address;
+                console.log(data.fistname)
+                await user.save();
+                resolve();
+            } else {
+                resolve();
+            }
+
+
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+
+
+
+}
+
 module.exports = {
     createNewUser: createNewUser,
-    getAllUser: getAllUser
+    getAllUser: getAllUser,
+    getUserInforById: getUserInforById,
+    updateUserData: updateUserData
 }
