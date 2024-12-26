@@ -92,6 +92,7 @@ let updateUserData = (data) => {
                 user.address = data.address;
 
                 await user.save();
+                // console.log(user)
                 let allUser = await db.User.findAll();
                 resolve(allUser);
             } else {
